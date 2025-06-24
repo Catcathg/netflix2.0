@@ -62,6 +62,7 @@ function Home() {
 
     return (
         <div style={{ padding: '30px' }}>
+            <h1>Netflix2.0</h1>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                 <h1>Choisissez une catégorie</h1>
                 <button
