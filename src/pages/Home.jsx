@@ -33,7 +33,7 @@ function Home() {
     };
 
     const Delete = (e, category) => {
-        e.stopPropagation(); // Empêche le clic sur la card
+        e.stopPropagation(); 
         if (confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${category.name}" ?`)) {
             axios.delete(`http://localhost:5001/api/categories/${category.id}`)
                 .then(() => {

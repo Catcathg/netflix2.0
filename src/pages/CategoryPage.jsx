@@ -7,7 +7,7 @@ function CategoryPage() {
     const [media, setMedia] = useState([]);
     const [categoryName, setCategoryName] = useState('');
     const [editModal, setEditModal] = useState({ show: false, media: null });
-    const [addModal, setAddModal] = useState(false);
+    const [showAddForm, setShowAddForm] = useState(false);
     const [editForm, setEditForm] = useState({
         title: '',
         type: '',
@@ -41,7 +41,7 @@ function CategoryPage() {
                 if (cat) setCategoryName(cat.name);
             });
     };
-    
+
     const EditMedia = (mediaItem) => {
         setEditForm({
             title: mediaItem.title,
@@ -75,8 +75,8 @@ function CategoryPage() {
     const CancelEdit = () => {
         setEditModal({ show: false, media: null });
     };
-    
-    const AddMedia = () => {
+
+    const ShowAddForm = () => {
         setAddForm({
             title: '',
             type: 'film',
@@ -84,7 +84,7 @@ function CategoryPage() {
             description: '',
             image_url: ''
         });
-        setAddModal(true);
+        setShowAddForm(true);
     };
 
     const SubmitAdd = (e) => {
@@ -98,7 +98,7 @@ function CategoryPage() {
         axios.post('http://localhost:5001/api/media', newMedia)
             .then((res) => {
                 setMedia([...media, res.data]);
-                setAddModal(false);
+                setShowAddForm(false);
             })
             .catch(err => {
                 console.error('Erreur lors de l\'ajout:', err);
@@ -107,7 +107,7 @@ function CategoryPage() {
     };
 
     const CancelAdd = () => {
-        setAddModal(false);
+        setShowAddForm(false);
     };
 
     const DeleteMedia = (mediaItem) => {
@@ -122,7 +122,7 @@ function CategoryPage() {
                 });
         }
     };
-    
+
     const modalStyles = {
         overlay: {
             position: 'fixed',
@@ -198,6 +198,31 @@ function CategoryPage() {
         }
     };
 
+    const formStyles = {
+        container: {
+            backgroundColor: '#f8f9fa',
+            padding: '20px',
+            borderRadius: '8px',
+            marginBottom: '30px',
+            border: '1px solid #dee2e6'
+        },
+        title: {
+            marginBottom: '20px',
+            color: '#333'
+        },
+        row: {
+            display: 'flex',
+            gap: '30px',
+            marginBottom: '15px'
+        },
+        column: {
+            flex: 1
+        },
+        fullWidth: {
+            width: '100%'
+        }
+    };
+
     return (
         <div style={{ padding: '30px' }}>
             <Link to="/" style={{ marginBottom: '20px', display: 'inline-block' }}>
@@ -207,7 +232,7 @@ function CategoryPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                 <h1>{categoryName}</h1>
                 <button
-                    onClick={AddMedia}
+                    onClick={ShowAddForm}
                     style={{
                         backgroundColor: '#007bff',
                         color: 'white',
@@ -221,6 +246,91 @@ function CategoryPage() {
                     + Ajouter un média
                 </button>
             </div>
+
+            {/* Formulaire d'ajout intégré */}
+            {showAddForm && (
+                <div style={formStyles.container}>
+                    <h2 style={formStyles.title}>Ajouter un nouveau média</h2>
+                    <form onSubmit={SubmitAdd}>
+                        <div style={formStyles.row}>
+                            <div style={formStyles.column}>
+                                <label style={modalStyles.label}>Titre :</label>
+                                <input
+                                    type="text"
+                                    value={addForm.title}
+                                    onChange={(e) => setAddForm({...addForm, title: e.target.value})}
+                                    style={modalStyles.input}
+                                    required
+                                    placeholder="Entrez le titre du média"
+                                />
+                            </div>
+                            <div style={formStyles.column}>
+                                <label style={modalStyles.label}>Type :</label>
+                                <select
+                                    value={addForm.type}
+                                    onChange={(e) => setAddForm({...addForm, type: e.target.value})}
+                                    style={modalStyles.input}
+                                    required
+                                >
+                                    <option value="film">Film</option>
+                                    <option value="serie">Série</option>
+                                </select>
+                            </div>
+                            <div style={formStyles.column}>
+                                <label style={modalStyles.label}>Année :</label>
+                                <input
+                                    type="number"
+                                    value={addForm.year}
+                                    onChange={(e) => setAddForm({...addForm, year: e.target.value})}
+                                    style={modalStyles.input}
+                                    min="1900"
+                                    max="2030"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div style={modalStyles.formGroup}>
+                            <label style={modalStyles.label}>Description :</label>
+                            <textarea
+                                value={addForm.description}
+                                onChange={(e) => setAddForm({...addForm, description: e.target.value})}
+                                style={modalStyles.textarea}
+                                required
+                                placeholder="Décrivez le média..."
+                            />
+                        </div>
+
+                        <div style={modalStyles.formGroup}>
+                            <label style={modalStyles.label}>URL de l'image :</label>
+                            <input
+                                type="url"
+                                value={addForm.image_url}
+                                onChange={(e) => setAddForm({...addForm, image_url: e.target.value})}
+                                style={modalStyles.input}
+                                required
+                                placeholder="https://exemple.com/image.jpg"
+                            />
+                        </div>
+
+                        <div style={modalStyles.buttonGroup}>
+                            <button
+                                type="button"
+                                onClick={CancelAdd}
+                                style={buttonStyles.cancel}
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                type="submit"
+                                style={buttonStyles.primary}
+                            >
+                                Ajouter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
 
             {media.length === 0 ? (
                 <p>Aucun contenu trouvé pour cette catégorie.</p>
@@ -290,93 +400,6 @@ function CategoryPage() {
                             <p style={{ fontSize: '0.9em', color: '#555' }}>{item.description}</p>
                         </div>
                     ))}
-                </div>
-            )}
-
-            {/* Modal d'ajout */}
-            {addModal && (
-                <div style={modalStyles.overlay}>
-                    <div style={modalStyles.content}>
-                        <h2>Ajouter un média</h2>
-                        <form onSubmit={SubmitAdd}>
-                            <div style={modalStyles.formGroup}>
-                                <label style={modalStyles.label}>Titre :</label>
-                                <input
-                                    type="text"
-                                    value={addForm.title}
-                                    onChange={(e) => setAddForm({...addForm, title: e.target.value})}
-                                    style={modalStyles.input}
-                                    required
-                                    placeholder="Entrez le titre du média"
-                                />
-                            </div>
-
-                            <div style={modalStyles.formGroup}>
-                                <label style={modalStyles.label}>Type :</label>
-                                <select
-                                    value={addForm.type}
-                                    onChange={(e) => setAddForm({...addForm, type: e.target.value})}
-                                    style={modalStyles.input}
-                                    required
-                                >
-                                    <option value="film">Film</option>
-                                    <option value="serie">Série</option>
-                                </select>
-                            </div>
-
-                            <div style={modalStyles.formGroup}>
-                                <label style={modalStyles.label}>Année :</label>
-                                <input
-                                    type="number"
-                                    value={addForm.year}
-                                    onChange={(e) => setAddForm({...addForm, year: e.target.value})}
-                                    style={modalStyles.input}
-                                    min="1900"
-                                    max="2030"
-                                    required
-                                />
-                            </div>
-
-                            <div style={modalStyles.formGroup}>
-                                <label style={modalStyles.label}>Description :</label>
-                                <textarea
-                                    value={addForm.description}
-                                    onChange={(e) => setAddForm({...addForm, description: e.target.value})}
-                                    style={modalStyles.textarea}
-                                    required
-                                    placeholder="Décrivez le média..."
-                                />
-                            </div>
-
-                            <div style={modalStyles.formGroup}>
-                                <label style={modalStyles.label}>URL de l'image :</label>
-                                <input
-                                    type="url"
-                                    value={addForm.image_url}
-                                    onChange={(e) => setAddForm({...addForm, image_url: e.target.value})}
-                                    style={modalStyles.input}
-                                    required
-                                    placeholder="https://exemple.com/image.jpg"
-                                />
-                            </div>
-
-                            <div style={modalStyles.buttonGroup}>
-                                <button
-                                    type="button"
-                                    onClick={CancelAdd}
-                                    style={buttonStyles.cancel}
-                                >
-                                    Annuler
-                                </button>
-                                <button
-                                    type="submit"
-                                    style={buttonStyles.primary}
-                                >
-                                    Ajouter
-                                </button>
-                            </div>
-                        </form>
-                    </div>
                 </div>
             )}
 
