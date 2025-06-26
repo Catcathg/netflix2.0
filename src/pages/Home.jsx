@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 function Home() {
     const [categories, setCategories] = useState([]);
@@ -17,10 +17,10 @@ function Home() {
     };
 
     const Edit = (e, category) => {
-        e.stopPropagation(); 
+        e.stopPropagation();
         const newName = prompt('Nouveau nom de la catégorie:', category.name);
         if (newName && newName.trim()) {
-            axios.put(`http://localhost:5001/api/categories/${category.id}`, { name: newName.trim() })
+            axios.put(`http://localhost:5001/api/categories/${category.id}`, {name: newName.trim()})
                 .then(() => {
                     axios.get('http://localhost:5001/api/categories')
                         .then(res => setCategories(res.data));
@@ -33,7 +33,7 @@ function Home() {
     };
 
     const Delete = (e, category) => {
-        e.stopPropagation(); 
+        e.stopPropagation();
         if (confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${category.name}" ?`)) {
             axios.delete(`http://localhost:5001/api/categories/${category.id}`)
                 .then(() => {
@@ -49,7 +49,7 @@ function Home() {
     const AddCategory = () => {
         const newName = prompt('Nom de la nouvelle catégorie:');
         if (newName && newName.trim()) {
-            axios.post('http://localhost:5001/api/categories', { name: newName.trim() })
+            axios.post('http://localhost:5001/api/categories', {name: newName.trim()})
                 .then((res) => {
                     setCategories([...categories, res.data]);
                 })
@@ -61,14 +61,14 @@ function Home() {
     };
 
     return (
-        <div style={{ padding: '30px' }}>
-            <h1>Netflix2.0</h1>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+        <div style={{padding: '30px'}}>
+            <h1 style={{color: 'blue'}}>Netflix2.0</h1>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px'}}>
                 <h1>Choisissez une catégorie</h1>
                 <button
                     onClick={AddCategory}
                     style={{
-                        backgroundColor: '#007bff',
+                        backgroundColor: 'blue',
                         color: 'white',
                         border: 'none',
                         padding: '10px 20px',
@@ -81,7 +81,7 @@ function Home() {
                 </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+            <div style={{display: 'flex', gap: '20px', flexWrap: 'wrap'}}>
                 {categories.map((cat) => (
                     <div
                         key={cat.id}

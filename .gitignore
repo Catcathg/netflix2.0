@@ -1,6 +1,4 @@
-echo ".env" >> .gitignore
-echo "node_modules/" >> .gitignore
-echo ".DS_Store" >> .gitignore
+.env
 # Logs
 logs
 *.log

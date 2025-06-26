@@ -229,12 +229,12 @@ function CategoryPage() {
                 ← Retour à l'accueil
             </Link>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <h1>{categoryName}</h1>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px'}}>
+                <h1 style={{color: 'blue'}}>{categoryName}</h1>
                 <button
                     onClick={ShowAddForm}
                     style={{
-                        backgroundColor: '#007bff',
+                        backgroundColor: 'blue',
                         color: 'white',
                         border: 'none',
                         padding: '10px 20px',
